@@ -24,11 +24,17 @@ let articleControllers = {
         } else if (req.params.query == "category") {
           query = "category";
         } else if (req.params.query == "author") {
-          query = "authr._id";
+          query = "author";
         }
         result.forEach(data => {
-          if (data[query] == value) {
-            list.push(data);
+          if (query == "author") {
+            if (data.author.username == value) {
+              list.push(data);
+            }
+          } else {
+            if (data[query] == value) {
+              list.push(data);
+            }
           }
         })
         console.log(query + "&" + value);
