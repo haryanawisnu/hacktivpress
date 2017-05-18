@@ -1,18 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import list_article from '@/components/list_article'
+import listarticle from '@/components/listarticle'
+import detail from '@/components/detail'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [{
     path: '/',
-    name: 'list_article',
-    component: list_article
+    name: 'listarticle',
+    component: listarticle
     // ,
     // children: [{
     //   path: '/',
     //   component: list_article
     // }]
+  }, {
+    path: '/detail',
+    name: 'detail',
+    component: detail
   }]
 })
