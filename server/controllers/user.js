@@ -1,6 +1,6 @@
 const User = require('../models/users');
 var passwordHash = require('password-hash');
-var jwthelpers = require('../helper/jwtHelpers');
+var jwthelpers = require('../helpers/jwtHelpers');
 
 let userControllers = {
   showAll: function(req, res) {

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 let index = require('./routes/index');
 let article = require('./routes/article');
 let users = require('./routes/users')
-var usersControllers = require('./controllers/users');
+var usersControllers = require('./controllers/user');
 var passport = require('passport');
 
 let db_config = {
