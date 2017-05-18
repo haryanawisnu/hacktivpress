@@ -13,6 +13,13 @@ export const store = new Vuex.Store({
       author: '',
       created: ''
     },
+    user: {
+      username: '',
+      password: '',
+      logusername: '',
+      logpassword: '',
+      email: ''
+    },
     statuslogin: false
   },
   mutations: {
@@ -28,63 +35,64 @@ export const store = new Vuex.Store({
     },
     viewArticle(state, data) {
       state.article = data;
+    },
+    setStatuslogintrue(state) {
+      state.statuslogin = true;
+    },
+    setStatusloginfalse(state) {
+      state.statuslogin = false;
+    },
+    setUser(state, data) {
+      state.user = data;
+    },
+    resetArticle(state) {
+      state.article.title = '';
+      state.article.category = '';
+      state.article.description = '';
     }
   },
   actions: {
-    create({
+    signin({
       commit
     }, data) {
-      axios.post('http://localhost:3000/house', {
-          title: data.title,
-          price: data.price,
-          description: data.description,
-          name: data.name,
-          phone: data.phone,
-          img: data.img,
-          lat: data.lat,
-          lang: data.lang
-        })
-        .then(function(response) {
-          console.log('Masuk ' + JSON.stringify(response));
-          commit('seedlistData')
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+      console.log(data);
+      if (data.username != '' && data.password != '') {
+        axios.post('http://localhost:3000/signin', {
+            username: data.username,
+            password: data.password
+          })
+          .then(function(response) {
+            if (response.data.success) {
+              alert('Welcome ' + response.data.data.username);
+              localStorage.setItem('token', response.data.token);
+              commit('setUser', response.data.data);
+              commit('setStatuslogintrue');
+            } else {
+              alert(response.data.message);
+            }
+          })
+      } else {
+        alert('Masukan Semua Field Form Signin');
+      }
     },
-    update({
+    signup({
       commit
     }, data) {
-      axios.put('http://localhost:3000/house/' + data._id, {
-          title: data.title,
-          price: data.price,
-          description: data.description,
-          name: data.name,
-          phone: data.phone,
-          img: data.img,
-          lat: data.lat,
-          lang: data.lang
-        })
-        .then(function(response) {
-          console.log('Update ' + JSON.stringify(response));
-          commit('seedlistData')
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    deleteData({
-      commit
-    }, data) {
-
-      axios.delete('http://localhost:3000/house/' + data)
-        .then(function(response) {
-          console.log('Delete ' + JSON.stringify(response));
-          commit('seedlistData')
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+      console.log(data);
+      if (data.username != '' && data.password != '' && data.email != '') {
+        axios.post('http://localhost:3000/users', {
+            username: data.username,
+            password: data.password,
+            email: data.email,
+          })
+          .then(function(response) {
+            alert('Selamat Bergabung diHactivpress ' + response.data.data.username);
+            localStorage.setItem('token', response.data.token);
+            commit('setStatuslogintrue');
+          })
+      } else {
+        alert('Masukan Semua Field Form Signup');
+      }
     },
     seedlistData({
       commit
@@ -101,6 +109,21 @@ export const store = new Vuex.Store({
     }, data) {
       commit('viewArticle', data);
       router.push('/detail')
+    },
+    resetArticle({
+      commit
+    }, data) {
+      commit('resetArticle');
+    },
+    logout({
+      commit
+    }, data) {
+      localStorage.removeItem('token');
+      commit('resetArticle');
+      commit('resetUser');
+      setStatusloginfalse
+      commit('setStatusloginfalse');
+      commit('logout');
     }
   },
   getters: {
@@ -112,6 +135,9 @@ export const store = new Vuex.Store({
     },
     statuslogin(state) {
       return state.statuslogin
+    },
+    user(state) {
+      return state.user
     }
   }
 })

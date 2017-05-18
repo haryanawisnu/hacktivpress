@@ -56,7 +56,10 @@ let userControllers = {
       email: req.body.email
     }, function(err, result) {
       if (result) {
-        res.send(result);
+        res.send({
+          token: jwthelpers.sign(result),
+          data: result
+        });
       } else {
         res.send(err);
       }

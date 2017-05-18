@@ -10,7 +10,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-        <a id="logotitle" class="navbar-brand" href="#"><b>Hacktivpress</b></a>
+        <a @click="resetArticle" id="logotitle" class="navbar-brand" href="#"><b>Hacktivpress</b></a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
@@ -19,42 +19,42 @@
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Search Article">
           </div>
-          <button type="submit" class="btn btn-default">Submit</button>
+          <button type="submit" class="btn btn-default">Search</button>
         </form>
-        <form id="signin" class="navbar-form navbar-left" role="form">
+        <form v-if="!statuslogin" id="signin" class="navbar-form navbar-left">
           <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input id="email" type="email" class="form-control" name="email" value="" placeholder="Username">
+            <input v-model="user.logusername" type="text" class="form-control" placeholder="Username">
           </div>
 
           <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-            <input id="password" type="password" class="form-control" name="password" value="" placeholder="Password">
+            <input v-model="user.logpassword" type="password" class="form-control" placeholder="Password">
           </div>
-          <button type="submit" class="btn btn-primary">Login</button>
+          <a @click="login" class="btn btn-primary">Login</a>
         </form>
-        <ul class="nav navbar-nav navbar-right">
+        <ul v-if="!statuslogin" class="nav navbar-nav navbar-right">
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Signup</b> <span class="caret"></span></a>
             <ul id="login-dp" class="dropdown-menu">
               <li>
                 <div class="row">
                   <div class="col-md-12">
-                    <form class="form" role="form" method="post" action="login" accept-charset="UTF-8" id="login-nav">
+                    <form class="form" id="login-nav">
                       <div class="form-group">
-                        <label class="sr-only" for="exampleInputEmail2">Username</label>
-                        <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Username" required>
+                        <label class="sr-only">Username</label>
+                        <input type="text" class="form-control" placeholder="Username" v-model="user.username">
                       </div>
                       <div class="form-group">
-                        <label class="sr-only" for="exampleInputEmail2">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Email address" required>
+                        <label class="sr-only">Email address</label>
+                        <input type="text" class="form-control" placeholder="Email address" v-model="user.email">
                       </div>
                       <div class="form-group">
-                        <label class="sr-only" for="exampleInputPassword2">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password" required>
+                        <label class="sr-only">Password</label>
+                        <input type="password" class="form-control" placeholder="Password" v-model="user.password">
                       </div>
                       <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                        <button type="submit" class="btn btn-primary btn-block" @click="signup">Sign Up</button>
                       </div>
                     </form>
                   </div>
@@ -63,6 +63,10 @@
             </ul>
           </li>
         </ul>
+        <form v-if="statuslogin" class="navbar-form navbar-right">
+          <b style="color: #ffffff;">{{user.username}}</b>&nbsp;&nbsp;
+          <a @click="logout" class="btn btn-warning">logout</a>
+        </form>
       </div>
       <!-- /.navbar-collapse -->
     </div>
@@ -74,9 +78,33 @@
 <script>
 export default {
   name: 'navbar',
-  data() {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+  computed: {
+    user() {
+      return this.$store.getters.user
+    },
+    statuslogin() {
+      return this.$store.getters.statuslogin
+    }
+  },
+  methods: {
+    signup() {
+      let obj = {};
+      obj.username = this.user.username;
+      obj.password = this.user.password;
+      obj.email = this.user.email;
+      this.$store.dispatch('signup', obj)
+    },
+    login() {
+      let obj = {};
+      obj.username = this.user.logusername;
+      obj.password = this.user.logpassword;
+      this.$store.dispatch('signin', obj)
+    },
+    resetArticle() {
+      this.$store.dispatch('resetArticle')
+    },
+    logout() {
+      this.$store.dispatch('logout')
     }
   }
 }
