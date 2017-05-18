@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 let index = require('./routes/index');
-let index = require('./routes/article');
+let article = require('./routes/article');
+let users = require('./routes/users')
 var usersControllers = require('./controllers/users');
 var passport = require('passport');
 
@@ -42,5 +43,3 @@ app.use('/', index);
 
 app.listen(3000);
 console.log('listening to port 3000');
-
-module.exports = app;
