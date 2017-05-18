@@ -50,20 +50,36 @@ let articleControllers = {
     });
   },
   create: (req, res, next) => {
-    Article.create({
-      title: req.body.title,
-      description: req.body.description,
-      category: req.body.category,
-      description: req.body.description,
-      author: req.body.author,
-      created: req.body.created
-    }, function(err, result) {
-      if (result) {
-        res.send(result);
-      } else {
-        res.send(err);
-      }
-    });
+    if (req.params.status) {
+      Article.create({
+        title: req.body.title,
+        description: req.body.description,
+        category: req.body.category,
+        description: req.body.description,
+        author: req.body.author,
+        created: req.body.created
+      }, function(err, result) {
+        if (result) {
+          res.send({
+            err: false,
+            message: "Create Success",
+            data: result
+          });
+        } else {
+          res.send({
+            err: true,
+            message: "ERR Create : " + err,
+            data: null
+          });
+        }
+      });
+    } else {
+      res.send({
+        err: true,
+        message: "Anda harus login terlebih dahulu",
+        data: null
+      });
+    }
   },
   delete: function(req, res) {
     Article.findByIdAndRemove(req.params.id, (err, user) => {
